@@ -1,1 +1,465 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงตารางงานเทรนเนอร์ TTB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>TTB Trainer System</h2>
+                <p>ระบบจัดการเทรนเนอร์</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" onclick="showDashboard()">
+                    <span>📊 แดชบอร์ด</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSchedule()">
+                    <span>📅 ตารางงานทั้งหมด</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showTrainerManagement()">
+                    <span>👥 จัดการเทรนเนอร์</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showRequests()">
+                    <span>📋 คำขอจอง</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showReports()">
+                    <span>📈 รายงาน</span>
+                </a>
+                <a href="#" class="nav-item" id="adminSettings" style="display:none;" onclick="showSettings()">
+                    <span>⚙️ การตั้งค่า</span>
+                </a>
+            </nav>
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">AD</div>
+                <div class="user-details">
+                    <strong id="userName">Admin</strong>
+                    <span id="userRole">ผู้ดูแลระบบ</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+            </div>
+        </div>
 
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="pageTitle">ยินดีต้อนรับกลับ!</h1>
+                    <p id="pageDescription">จัดการตารางงานเทรนเนอร์ทั้งหมดของคุณ</p>
+                </div>
+                <div class="header-right">
+                    <div class="date-display" id="currentDate"></div>
+                    <div class="notification-bell" id="notificationBell" style="display:none;" onclick="showNotifications()">
+                        <span>🔔</span>
+                        <span class="notification-count" id="notificationCount">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardContent">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="totalTrainers">13</h3>
+                            <p>เทรนเนอร์ทั้งหมด</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="availableToday">0</h3>
+                            <p>ว่างในวันนี้</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <h3 id="totalBookings">0</h3>
+                            <p>นัดหมายทั้งหมด</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-info">
+                            <h3 id="pendingRequests">0</h3>
+                            <p>รอดำเนินการ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="content-grid">
+                    <!-- Trainer Schedule Section -->
+                    <div class="content-card large-card">
+                        <div class="card-header">
+                            <h3>📅 ตารางงานเทรนเนอร์</h3>
+                            <div class="header-actions">
+                                <input type="date" id="scheduleDate" class="date-picker">
+                                <button class="btn-primary" onclick="showBookingForm()" id="addBookingBtn">+ เพิ่มงานใหม่</button>
+                            </div>
+                        </div>
+                        <div class="trainer-schedule">
+                            <div class="schedule-header">
+                                <div class="trainer-column">เทรนเนอร์</div>
+                                <div class="time-slots" id="timeSlots">
+                                    <!-- Time slots will be generated by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="schedule-body" id="scheduleBody">
+                                <!-- Trainer schedule will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Trainer List -->
+                    <div class="side-panel">
+                        <!-- Quick Actions -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>🚀 การดำเนินการด่วน</h3>
+                            </div>
+                            <div class="quick-actions">
+                                <button class="action-btn" onclick="showBookingForm()" id="quickBookingBtn">
+                                    <span>📋 คำขอจองใหม่</span>
+                                </button>
+                                <button class="action-btn" onclick="showAvailability()">
+                                    <span>👀 ตรวจสอบความว่าง</span>
+                                </button>
+                                <button class="action-btn" onclick="generateReport()">
+                                    <span>📊 สร้างรายงาน</span>
+                                </button>
+                                <button class="action-btn" onclick="showTrainerManagement()">
+                                    <span>👥 จัดการเทรนเนอร์</span>
+                                </button>
+                                <button class="action-btn" onclick="showDailyReport()">
+                                    <span>📋 Daily Report</span>
+                                </button>
+                                <button class="action-btn" onclick="addSampleData()" id="sampleDataBtn">
+                                    <span>🎯 เพิ่มข้อมูลตัวอย่าง</span>
+                                </button>
+                                <button class="action-btn" onclick="clearAllData()" id="clearDataBtn">
+                                    <span>🗑️ ล้างข้อมูล</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Trainer List -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3>👥 รายชื่อเทรนเนอร์</h3>
+                            </div>
+                            <div class="trainer-list" id="trainerList">
+                                <!-- Trainer list will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainer Personal View (Hidden by default) -->
+            <div id="trainerView" style="display:none;">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📅 ตารางงานของฉัน</h3>
+                        <button class="btn-primary" onclick="showDashboard()">← กลับไปหน้าแดชบอร์ด</button>
+                    </div>
+                    <div class="personal-schedule" id="personalSchedule">
+                        <!-- Personal schedule will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3>📋 งานที่รอดำเนินการ</h3>
+                    </div>
+                    <div class="pending-tasks" id="pendingTasks">
+                        <!-- Pending tasks will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 กรอกข้อมูลการจอง</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="bookingForm" class="modal-form">
+                <div class="form-group">
+                    <label>เลือกเทรนเนอร์</label>
+                    <select id="trainerSelect" required>
+                        <option value="">-- เลือกเทรนเนอร์ --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>วันที่</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>เวลาเริ่ม</label>
+                        <input type="time" id="startTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>เวลาสิ้นสุด</label>
+                        <input type="time" id="endTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>หัวข้อการฝึกอบรม</label>
+                    <input type="text" id="trainingTopic" placeholder="ระบุหัวข้อ..." required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ประเภท</label>
+                        <select id="trainingType" required>
+                            <option value="internal">Internal</option>
+                            <option value="external">External</option>
+                            <option value="ttb">ttb</option>
+                            <option value="pd_ttb">PD ttb</option>
+                            <option value="plt">PLT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>รูปแบบ</label>
+                        <select id="trainingFormat" required>
+                            <option value="online">Online</option>
+                            <option value="f2f">Face to Face</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>รายละเอียดเพิ่มเติม</label>
+                    <textarea id="trainingDetails" rows="3" placeholder="ระบุรายละเอียด..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">ยกเลิก</button>
+                    <button type="submit" class="btn-primary">บันทึกการจอง</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Availability Check Modal -->
+    <div id="availabilityModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👀 ตรวจสอบความว่าง</h3>
+                <span class="close" onclick="closeAvailabilityModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label>เลือกวันที่</label>
+                    <input type="date" id="availabilityDate" required>
+                </div>
+                <div class="form-group">
+                    <label>เลือกเวลา</label>
+                    <input type="time" id="availabilityTime" required>
+                </div>
+                <div class="form-group">
+                    <label>ระยะเวลา (ชั่วโมง)</label>
+                    <select id="durationHours">
+                        <option value="1">1 ชั่วโมง</option>
+                        <option value="2">2 ชั่วโมง</option>
+                        <option value="3">3 ชั่วโมง</option>
+                        <option value="4">4 ชั่วโมง</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="checkAvailability()">ตรวจสอบความว่าง</button>
+                
+                <div id="availabilityResult" class="availability-result" style="display: none;">
+                    <h4>ผลการตรวจสอบ:</h4>
+                    <div id="availableTrainersList" class="available-trainers"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trainer Management Modal -->
+    <div id="trainerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👥 จัดการเทรนเนอร์</h3>
+                <span class="close" onclick="closeTrainerModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div class="trainer-management">
+                    <div class="management-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalActiveTrainers">0</span>
+                            <span class="stat-label">เทรนเนอร์ทั้งหมด</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="availableTrainersCount">0</span>
+                            <span class="stat-label">ว่างในวันนี้</span>
+                        </div>
+                    </div>
+                    
+                    <div class="management-actions">
+                        <button class="btn-primary" onclick="showAddUserForm()">+ เพิ่มผู้ใช้ใหม่</button>
+                        <button class="btn-secondary" onclick="showPasswordResetForm()">รีเซ็ตรหัสผ่าน</button>
+                    </div>
+                    
+                    <div class="trainer-management-list" id="trainerManagementList">
+                        <!-- Trainer management list will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👤 เพิ่มผู้ใช้ใหม่</h3>
+                <span class="close" onclick="closeAddUserModal()">&times;</span>
+            </div>
+            <form id="addUserForm" class="modal-form">
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" id="newUserId" placeholder="เช่น ttb_ab" required>
+                </div>
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล (ไทย)</label>
+                    <input type="text" id="newUserFullNameTh" placeholder="ชื่อ-นามสกุลภาษาไทย" required>
+                </div>
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล (อังกฤษ)</label>
+                    <input type="text" id="newUserFullNameEn" placeholder="Full Name in English" required>
+                </div>
+                <div class="form-group">
+                    <label>อีเมล์</label>
+                    <input type="email" id="newUserEmail" placeholder="อีเมล์ส่วนตัว" required>
+                </div>
+                <div class="form-group">
+                    <label>บทบาท</label>
+                    <select id="newUserRole" required>
+                        <option value="Member">เทรนเนอร์ (Member)</option>
+                        <option value="Admin">ผู้ดูแลระบบ (Admin)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่านเริ่มต้น</label>
+                    <input type="text" id="newUserPassword" value="Hellowelcome" readonly>
+                    <small>รหัสผ่านเริ่มต้นคือ "Hellowelcome"</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeAddUserModal()">ยกเลิก</button>
+                    <button type="submit" class="btn-primary">เพิ่มผู้ใช้</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <div id="passwordResetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 รีเซ็ตรหัสผ่าน</h3>
+                <span class="close" onclick="closePasswordResetModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label>เลือกผู้ใช้</label>
+                    <select id="resetPasswordUser" required>
+                        <option value="">-- เลือกผู้ใช้ --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่านใหม่</label>
+                    <input type="text" id="newPassword" value="Hellowelcome" readonly>
+                    <small>รหัสผ่านจะถูกตั้งเป็น "Hellowelcome"</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closePasswordResetModal()">ยกเลิก</button>
+                    <button type="button" class="btn-primary" onclick="resetPassword()">รีเซ็ตรหัสผ่าน</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔔 การแจ้งเตือน</h3>
+                <span class="close" onclick="closeNotificationsModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div class="notifications-list" id="notificationsList">
+                    <!-- Notifications will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Report Modal -->
+    <div id="dailyReportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Daily Report</h3>
+                <span class="close" onclick="closeDailyReportModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label>เลือกวันที่</label>
+                    <input type="date" id="dailyReportDate" required>
+                </div>
+                <button class="btn-primary" onclick="generateDailyReport()">สร้าง Daily Report</button>
+                
+                <div id="dailyReportResult" class="daily-report-result" style="display: none;">
+                    <div class="report-header">
+                        <h4>Daily Report</h4>
+                        <button class="btn-secondary" onclick="copyDailyReport()">คัดลอก</button>
+                    </div>
+                    <textarea id="dailyReportText" readonly rows="15"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Response Modal for Trainer -->
+    <div id="responseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 ตอบกลับงาน</h3>
+                <span class="close" onclick="closeResponseModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div id="responseDetails">
+                    <!-- Response details will be populated by JavaScript -->
+                </div>
+                <div class="form-group">
+                    <label>สถานะ</label>
+                    <select id="responseStatus" required>
+                        <option value="accepted">รับงาน</option>
+                        <option value="rejected">ปฏิเสธงาน</option>
+                    </select>
+                </div>
+                <div class="form-group" id="rejectionReasonGroup" style="display: none;">
+                    <label>เหตุผลการปฏิเสธ</label>
+                    <textarea id="rejectionReason" rows="3" placeholder="ระบุเหตุผล..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeResponseModal()">ยกเลิก</button>
+                    <button type="button" class="btn-primary" onclick="submitResponse()">ส่งคำตอบ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
