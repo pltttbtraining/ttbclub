@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงตารางงานเทรนเนอร์ TTB - ล็อกอิน</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>TTB Trainer System</h2>
+                <p>ระบบจัดการเทรนเนอร์</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" id="loginUserId" placeholder="กรอก User ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" id="loginPassword" placeholder="กรอกรหัสผ่าน" required>
+                </div>
+                
+                <button type="submit" class="btn-primary login-btn">เข้าสู่ระบบ</button>
+                
+                <div class="login-links">
+                    <a href="#" onclick="showForgotPassword()">ลืมรหัสผ่าน?</a>
+                </div>
+            </form>
+            
+            <div class="demo-accounts">
+                <h4>บัญชีทดสอบ:</h4>
+                <div class="demo-account">
+                    <strong>Master:</strong> ttb_yj / Hellowelcome
+                </div>
+                <div class="demo-account">
+                    <strong>Admin:</strong> ttb_ac / Hellowelcome
+                </div>
+                <div class="demo-account">
+                    <strong>Trainer:</strong> ttb_ap / Hellowelcome
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 ลืมรหัสผ่าน</h3>
+                <span class="close" onclick="closeForgotPasswordModal()">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" id="forgotPasswordUserId" placeholder="กรอก User ID" required>
+                </div>
+                <div class="form-info">
+                    <p>ระบบจะส่งคำขอรีเซ็ตรหัสผ่านไปยังผู้ดูแลระบบ</p>
+                    <p>รหัสผ่านใหม่จะถูกตั้งเป็น <strong>Hellowelcome</strong></p>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeForgotPasswordModal()">ยกเลิก</button>
+                    <button type="button" class="btn-primary" onclick="requestPasswordReset()">ส่งคำขอ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
